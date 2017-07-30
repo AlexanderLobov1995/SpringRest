@@ -2,10 +2,10 @@ package controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import service.HumanService;
 
 import java.io.IOException;
@@ -19,9 +19,13 @@ public class HelloRestController {
     @Autowired
     private ObjectMapper mapper;
 
-    @RequestMapping(value = "/getPeople", method = RequestMethod.GET)
-    @ResponseBody
-    public String getPeople() throws IOException {
-        return mapper.writeValueAsString(humanService.getPeople());
+    @RequestMapping (value = "/getPeople", method = RequestMethod.GET)
+    public ResponseEntity<String> getPeople () throws IOException {
+        HttpHeaders responseHeaders = new HttpHeaders ();
+        responseHeaders.add ("Content-Type", "application/json; charset=utf-8");
+        responseHeaders.add ("Access-Control-Allow-Headers", "Content-Type");
+        responseHeaders.add ("Access-Control-Allow-Methods", "GET");
+        responseHeaders.add ("Access-Control-Allow-Origin", "http://localhost:8080");
+        return new ResponseEntity<String> (mapper.writeValueAsString (humanService.getPeople ()), responseHeaders, HttpStatus.OK);
     }
 }
